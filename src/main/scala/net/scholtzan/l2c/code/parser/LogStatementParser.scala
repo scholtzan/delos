@@ -6,7 +6,7 @@ import net.scholtzan.l2c.code._
 /** Parses source code files to extract logging statements. */
 trait LogStatementParser {
   var logInstanceParser: Parser[String]
-  var logStatementStartParser: Parser[String]
+  def logStatementStartParser(loggers: Seq[String]): Parser[(String, String)]
   var logStatementVariableParameterParser: Parser[Seq[String]]
   var logStatementStringParameterParser: Parser[Seq[String]]
 
@@ -21,8 +21,8 @@ trait LogStatementParser {
   }
 
   // todo add parser for log level
-  def parseLogStatement(line: String): Option[LogStatementInformation] = {
-    logStatementStartParser.parse(line) match {
+  def parseLogStatement(line: String, loggers: Seq[String]): Option[LogStatementInformation] = {
+    logStatementStartParser(loggers).parse(line) match {
       case Parsed.Success((logger, parameter), _) =>
         logStatementStringParameterParser.parse(parameter) match {
           case Parsed.Success(stringParameter, _) =>
@@ -51,11 +51,11 @@ trait LogStatementParser {
   }
 
   /** Parses text for logging statements. */
-  def parse(line: String): Option[ParserResult] = {
+  def parse(line: String, loggers: Seq[String]): Option[ParserResult] = {
     if (parseLogInstantiation(line).isDefined) {
       parseLogInstantiation(line)
-    } else if (parseLogStatement(line).isDefined) {
-      parseLogStatement(line)
+    } else if (parseLogStatement(line, loggers).isDefined) {
+      parseLogStatement(line, loggers)
     } else {
       None
     }

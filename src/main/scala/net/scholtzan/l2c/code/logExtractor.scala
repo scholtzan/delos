@@ -4,8 +4,8 @@ import net.scholtzan.l2c.code.parser.LogStatementParser
 import scala.io.Source
 
 sealed trait Statement {
-  var line: Int
-  var raw: String
+  val line: Int
+  val raw: String
 }
 
 sealed trait ParserResult { }
@@ -16,9 +16,9 @@ sealed trait ParserResult { }
   * @param line line number
   */
 case class LogStatement(
-  override val line: Int,
-  override val raw: String,
-  filePath: String,
+  line: Int,
+  raw: String,
+  filePath: Option[String],
   information: LogStatementInformation
 ) extends Statement
 
@@ -32,8 +32,8 @@ case class LogStatementInformation(
 ) extends ParserResult
 
 case class LogInstance(
-  override val line: Int,
-  override val raw: String,
+  line: Int,
+  raw: String,
   information: LogInstanceInformation
 ) extends Statement
 
@@ -45,14 +45,24 @@ case class LogInstanceInformation(
 
 class LogExtractor(parsers: Seq[LogStatementParser]) {
   def extractFromFile(filePath: String): List[LogStatement] = {
-    val parsedStatements = Source.fromFile(filePath).getLines.foldLeft((List[Statement](), 1)) { (acc, line) =>
-      val lineToBeParsed = acc._1.last match {
+    extract(Source.fromFile(filePath).getLines, Some(filePath))
+  }
+
+  def extractFromString(code: String): List[LogStatement] = {
+    extract(code.split("\n").iterator, None)
+  }
+
+  private def extract(lines: Iterator[String], filePath: Option[String]): List[LogStatement] = {
+    val parsedStatements = lines.foldLeft((List[LogStatement](), List[LogInstance]())) { (acc, current) =>
+      val lineToBeParsed = logStatements._1.last match {
         case log: LogStatement if !log.information.completelyParsed => log.raw + line
         case _ => line
       }
 
+      val loggersFound =
+
       val parsingResult = parsers.collectFirst {
-        case parser if parser.parse(lineToBeParsed).nonEmpty => parser.parse(line)
+        case parser if parser.parse(lineToBeParsed, loggers).nonEmpty => parser.parse(line, loggers)
       }
 
       parsingResult match {
@@ -78,7 +88,7 @@ class LogExtractor(parsers: Seq[LogStatementParser]) {
     }
 
     val logInstances = parsedStatements._1.flatMap {
-      case (s: LogInstance, _) => Some(s)
+      case s: LogInstance => Some(s)
       case _ => None
     }
 
