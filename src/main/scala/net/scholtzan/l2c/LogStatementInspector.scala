@@ -1,5 +1,6 @@
 package net.scholtzan.l2c
 
+import scala.collection.mutable.ListBuffer
 import scala.tools.nsc.Global
 
 abstract class LogStatementInspector(val ctx: InspectionContext) {
@@ -8,8 +9,13 @@ abstract class LogStatementInspector(val ctx: InspectionContext) {
 
 
 case class InspectionContext(global: Global) {
-  trait Traverser extends global.Traverser {
+  val detectedLogStatements = new ListBuffer[LogStatement]
 
+  def addLogStatement(logStatement: LogStatement) = {
+    detectedLogStatements.append(logStatement)
+  }
+
+  trait Traverser extends global.Traverser {
     import global._
 
     protected def inspect(tree: Tree): Unit

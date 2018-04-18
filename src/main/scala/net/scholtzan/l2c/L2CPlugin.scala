@@ -18,12 +18,13 @@ class L2CPluginComponent(val global: Global) extends PluginComponent with Typing
 
   override protected def newTransformer(unit: global.CompilationUnit): global.Transformer = new L2CTransformer(unit)
 
-  val inspectors = log.inspectors(InspectionContext(global))
+  val context = InspectionContext(global)
+  val inspectors = log.inspectors(context)
 
   override def newPhase(prev: scala.tools.nsc.Phase): Phase = new Phase(prev) {
     override def run(): Unit = {
-      // todo
       super.run()
+      println(context.detectedLogStatements)
     }
   }
 
