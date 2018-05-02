@@ -31,6 +31,17 @@ class SLF4JInspector(override val ctx: InspectionContext) extends LogStatementIn
         }
       }
 
+      private def extractVariables(logParameter: List[ctx.global.Tree]): Seq[String] = {
+        logParameter.flatMap {
+          case Select(_, TermName(varName)) => Some(varName.toString)
+//          case Apply(Select(left, TermName(functionName)), right) =>
+//            extractVariables(List(left)) ++ extractVariables(right)
+          case Apply(Select(left, _), right) =>
+            extractVariables(List(left)) ++ extractVariables(right)
+          case _ => None
+        }
+      }
+
       override protected def inspect(tree: ctx.global.Tree): Unit = {
         tree match {
           case Apply(Select(Select(sel, _), f), arg) if sel.isInstanceOf[Select] && sel.asInstanceOf[Select].tpe <:< typeOf[Logger] =>
@@ -43,7 +54,7 @@ class SLF4JInspector(override val ctx: InspectionContext) extends LogStatementIn
                   tree.pos.line,
                   logLevel,
                   libraryName,
-                  Seq(),    // todo
+                  extractVariables(arg),
                   extractLogStrings(arg)
                 ))
               case None => continue(tree)

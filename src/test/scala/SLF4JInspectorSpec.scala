@@ -19,11 +19,13 @@ class SLF4JInspectorSpec  extends FlatSpec {
         import com.sun.crypto.provider.AESCipher
         import javax.crypto.KeyGenerator
 
-
         object XXX {
+          def funct(a: Int) = a.toString()
+
           val logger = Logger("log")
           val logger2 = Logger("log2")
-          logger.debug(s"test123 $${logger.toString()} asdf")
+          val foo = 123
+          logger.debug(s"test $${foo.toString()}")
           val k = KeyGenerator.getInstance("Blowfish");
 
         }
