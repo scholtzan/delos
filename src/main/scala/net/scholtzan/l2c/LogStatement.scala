@@ -11,7 +11,7 @@ case class LogStatement(
   logLevel: LogLevel,
   library: String,
   variables: Seq[String],
-  logString: String
+  logStrings: Seq[String]
 )
 
 // todo: add more

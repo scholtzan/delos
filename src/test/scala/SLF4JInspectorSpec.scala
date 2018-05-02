@@ -14,7 +14,7 @@ class SLF4JInspectorSpec  extends FlatSpec {
     println("testing")
     // prepare the code you want to compile
     val code =
-      """
+      s"""
         import com.typesafe.scalalogging.Logger
         import com.sun.crypto.provider.AESCipher
         import javax.crypto.KeyGenerator
@@ -23,7 +23,7 @@ class SLF4JInspectorSpec  extends FlatSpec {
         object XXX {
           val logger = Logger("log")
           val logger2 = Logger("log2")
-          logger.debug("test123")
+          logger.debug(s"test123 $${logger.toString()} asdf")
           val k = KeyGenerator.getInstance("Blowfish");
 
         }

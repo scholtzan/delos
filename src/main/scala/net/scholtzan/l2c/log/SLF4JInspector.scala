@@ -22,9 +22,20 @@ class SLF4JInspector(override val ctx: InspectionContext) extends LogStatementIn
         }
       }
 
+      private def extractLogStrings(logParameter: List[ctx.global.Tree]): Seq[String] = {
+        logParameter.flatMap {
+          case Literal(Constant(str)) => Some(str.toString) // single string as parameter
+          case Apply(Select(left, TermName("$plus")), right) =>   // concatenated string
+            extractLogStrings(List(left)) ++ extractLogStrings(right)
+          case _ => None
+        }
+      }
+
       override protected def inspect(tree: ctx.global.Tree): Unit = {
         tree match {
           case Apply(Select(Select(sel, _), f), arg) if sel.isInstanceOf[Select] && sel.asInstanceOf[Select].tpe <:< typeOf[Logger] =>
+            println(showRaw(arg))
+
             logLevel(f.asInstanceOf[TermName].localName.toString) match {
               case Some(logLevel) =>
                 ctx.addLogStatement(LogStatement(
@@ -33,7 +44,7 @@ class SLF4JInspector(override val ctx: InspectionContext) extends LogStatementIn
                   logLevel,
                   libraryName,
                   Seq(),    // todo
-                  "todo"    // todo
+                  extractLogStrings(arg)
                 ))
               case None => continue(tree)
             }
