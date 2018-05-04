@@ -36,6 +36,8 @@ class SLF4JInspector(override val ctx: InspectionContext) extends LogStatementIn
           case Select(_, TermName(varName)) => Some(varName.toString)
 //          case Apply(Select(left, TermName(functionName)), right) =>
 //            extractVariables(List(left)) ++ extractVariables(right)
+          case Select(Select(_, TermName(varName)), _) =>     // todo: not working
+            Some(varName.toString)
           case Apply(Select(left, _), right) =>
             extractVariables(List(left)) ++ extractVariables(right)
           case _ => None

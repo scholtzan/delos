@@ -3,6 +3,7 @@ package net.scholtzan.l2c
 import scala.collection.mutable.ListBuffer
 import scala.tools.nsc.Global
 
+
 abstract class LogStatementInspector(val ctx: InspectionContext) {
   def traverser: ctx.Traverser
 }
