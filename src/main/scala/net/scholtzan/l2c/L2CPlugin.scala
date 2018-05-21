@@ -9,11 +9,13 @@ import java.nio.file.{Paths, Files}
 import java.nio.charset.StandardCharsets
 
 
+/** Compiler plugin for extracting all log statements from provided source code. */
 class L2CPlugin(val global: Global) extends Plugin {
   override val name = "l2c"
   override val description = "Extracts all log statements from the code"
   override val components: List[PluginComponent] = List[PluginComponent](L2CPluginComponent)
 
+  /** All extracted log statements will be written to the provided path. */
   var outputPath = "/tmp/out.json"
 
   override def processOptions(options: List[String], error: String => Unit) {

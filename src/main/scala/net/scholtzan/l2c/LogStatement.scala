@@ -4,6 +4,8 @@ import net.scholtzan.l2c.LogLevel.LogLevel
 import ujson.Js
 import upickle.default.{macroRW, ReadWriter => RW}
 
+
+/** Represents a log statements that was detected in the source code. */
 // todo: add raw
 case class LogStatement(
   filePath: String,
@@ -15,6 +17,7 @@ case class LogStatement(
 )
 
 
+/** Describes the JSON serialization of `LogStatement`. */
 object LogStatement{
   implicit val rw = upickle.default.readwriter[Js.Value].bimap[LogStatement](
     log => Js.Obj(
@@ -38,7 +41,9 @@ object LogStatement{
   )
 }
 
-// todo: add more
+
+/** Available log levels that can be detected. */
+// todo: add more log level
 object LogLevel extends Enumeration {
   type LogLevel = Value
   val Debug = Value("debug")

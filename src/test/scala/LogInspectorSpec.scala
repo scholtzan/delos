@@ -8,13 +8,21 @@ import scala.tools.nsc.{Global, Settings}
 import scala.tools.nsc.reporters.ConsoleReporter
 import scala.tools.nsc.util.ClassPath
 
+/** Trait can be implemented by Specs to test compiler plugin on provided source code. */
 trait LogInspectorSpec {
+  /** All results will be written to provided path. */
   val outputPath: String
 
+  /** Runs the compiler plugin against the provided code.
+    *
+    * @param code  Source code to be inspected for log statements.
+    */
   def runCompileTests(code: String) = {
     val sources = List(new BatchSourceFile("<test>", code))
 
     // todo: pass output as compiler option
+
+    // todo: allow subset of inspectors to be executed, otherwise Specs need to handle mixed results
 
     val settings = new Settings
     val loader = getClass.getClassLoader.asInstanceOf[URLClassLoader]
@@ -36,6 +44,11 @@ trait LogInspectorSpec {
     new compiler.Run() compileSources sources
   }
 
+  /** Checks if the compiler plugin delivers the expected output.
+    *
+    * @param logStatements  expected output
+    * @return   compiler plugin returns same results as expected output
+    */
   def expected(logStatements: Seq[LogStatement]): Boolean = {
     val outFileContent = io.Source.fromFile(outputPath).getLines().mkString
     val outLogStatements = upickle.default.read[Seq[LogStatement]](outFileContent)

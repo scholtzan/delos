@@ -1,7 +1,7 @@
 import net.scholtzan.l2c.{LogLevel, LogStatement}
 import org.scalatest.FlatSpec
 
-
+/** Tests for SLF4J log statements. */
 class SLF4JInspectorSpec extends FlatSpec with LogInspectorSpec {
   override val outputPath: String = "/tmp/out.json"
 
