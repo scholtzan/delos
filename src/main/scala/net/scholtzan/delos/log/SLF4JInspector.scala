@@ -1,8 +1,8 @@
-package net.scholtzan.l2c.log
+package net.scholtzan.delos.log
 
 import com.typesafe.scalalogging.Logger
-import net.scholtzan.l2c.LogLevel.LogLevel
-import net.scholtzan.l2c.{InspectionContext, LogLevel, LogStatement, LogStatementInspector}
+import net.scholtzan.delos.LogLevel.LogLevel
+import net.scholtzan.delos.{InspectionContext, LogLevel, LogStatement, LogStatementInspector}
 
 
 /** Inspector to extract SLF4J logging statements.

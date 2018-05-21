@@ -1,4 +1,4 @@
-package net.scholtzan.l2c
+package net.scholtzan.delos
 
 
 import scala.tools.nsc.plugins.{Plugin, PluginComponent}
@@ -10,10 +10,10 @@ import java.nio.charset.StandardCharsets
 
 
 /** Compiler plugin for extracting all log statements from provided source code. */
-class L2CPlugin(val global: Global) extends Plugin {
-  override val name = "l2c"
+class DelosPlugin(val global: Global) extends Plugin {
+  override val name = "delos"
   override val description = "Extracts all log statements from the code"
-  override val components: List[PluginComponent] = List[PluginComponent](L2CPluginComponent)
+  override val components: List[PluginComponent] = List[PluginComponent](DelosPluginComponent)
 
   /** All extracted log statements will be written to the provided path. */
   var outputPath = "/tmp/out.json"
@@ -29,15 +29,15 @@ class L2CPlugin(val global: Global) extends Plugin {
   }
 
   override val optionsHelp: Option[String] = Some(
-    "  -P:l2c:out:path            set path of output file")
+    "  -P:delos:out:path            set path of output file")
 
 
-  object L2CPluginComponent extends PluginComponent with TypingTransformers with Transform {
-    val global: L2CPlugin.this.global.type = L2CPlugin.this.global
-    override val phaseName = "l2c"
+  object DelosPluginComponent extends PluginComponent with TypingTransformers with Transform {
+    val global: DelosPlugin.this.global.type = DelosPlugin.this.global
+    override val phaseName = "delos"
     override val runsAfter = List("typer")
 
-    override protected def newTransformer(unit: global.CompilationUnit): global.Transformer = new L2CTransformer(unit)
+    override protected def newTransformer(unit: global.CompilationUnit): global.Transformer = new DelosTransformer(unit)
 
     val context = InspectionContext(global)
     val inspectors = log.inspectors(context)
@@ -52,7 +52,7 @@ class L2CPlugin(val global: Global) extends Plugin {
       }
     }
 
-    class L2CTransformer(unit: global.CompilationUnit) extends TypingTransformer(unit) {
+    class DelosTransformer(unit: global.CompilationUnit) extends TypingTransformer(unit) {
       override def transform(tree: global.Tree): global.Tree = {
         println("Inspect tree")
 

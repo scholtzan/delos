@@ -1,4 +1,4 @@
-package net.scholtzan.l2c
+package net.scholtzan.delos
 
 import scala.collection.mutable.ListBuffer
 import scala.tools.nsc.Global

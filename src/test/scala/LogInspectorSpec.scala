@@ -1,6 +1,6 @@
 import java.net.URLClassLoader
 
-import net.scholtzan.l2c.{L2CPlugin, LogStatement}
+import net.scholtzan.delos.{DelosPlugin, LogStatement}
 
 import scala.reflect.internal.util.BatchSourceFile
 import scala.reflect.io.VirtualDirectory
@@ -30,14 +30,14 @@ trait LogInspectorSpec {
     val sclpath = entries find (_.endsWith("scala-compiler.jar")) map (
       _.replaceAll("scala-compiler.jar", "scala-library.jar"))
     settings.classpath.value = ClassPath.join(entries ++ sclpath: _*)
-    settings.processArgumentString("-Ylog:l2c -Xprint:l2c")
+    settings.processArgumentString("-Ylog:delos -Xprint:delos")
 
     settings.outputDirs.setSingleOutput(new VirtualDirectory("(memory)", None))
 
     val compiler = new Global(settings, new ConsoleReporter(settings)) {
       override protected def computeInternalPhases() {
         super.computeInternalPhases
-        for (phase <- new L2CPlugin(this).components)
+        for (phase <- new DelosPlugin(this).components)
           phasesSet += phase
       }
     }

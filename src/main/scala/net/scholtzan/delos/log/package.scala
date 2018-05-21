@@ -1,4 +1,4 @@
-package net.scholtzan.l2c
+package net.scholtzan.delos
 
 package object log {
   /** Provide list of all available log file inspectors.

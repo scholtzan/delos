@@ -1,4 +1,4 @@
-import net.scholtzan.l2c.{LogLevel, LogStatement}
+import net.scholtzan.delos.{LogLevel, LogStatement}
 import org.scalatest.FlatSpec
 
 /** Tests for SLF4J log statements. */

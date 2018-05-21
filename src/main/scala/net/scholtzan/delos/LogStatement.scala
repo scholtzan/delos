@@ -1,6 +1,6 @@
-package net.scholtzan.l2c
+package net.scholtzan.delos
 
-import net.scholtzan.l2c.LogLevel.LogLevel
+import net.scholtzan.delos.LogLevel.LogLevel
 import ujson.Js
 import upickle.default.{macroRW, ReadWriter => RW}
 
