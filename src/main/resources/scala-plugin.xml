@@ -1,0 +1,4 @@
+<plugin>
+    <name>delos</name>
+    <classname>net.scholtzan.delos.DelosPlugin</classname>
+</plugin>
